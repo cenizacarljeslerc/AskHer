@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Daisy 💖</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #ffe4ef;
+    font-family: 'Comic Sans MS', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.card {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.bunny {
+    width: 260px;
+    max-width: 90%;
+}
+
+h1 {
+    color: #ff5c8a;
+    font-size: 34px;
+    margin: 10px 0 25px;
+}
+
+.buttons {
+    position: relative;
+    height: 100px;
+}
+
+button {
+    border: none;
+    border-radius: 50px;
+    padding: 16px 46px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    transition: 0.15s ease;
+}
+
+/* 3D YES BUTTON */
+#yes {
+    background: linear-gradient(145deg, #ff5c8a, #ff8fb3);
+    color: white;
+    left: 18%;
+    box-shadow: 0 8px 0 #d93f6c;
+}
+
+#yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 0 #d93f6c;
+}
+
+#yes:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 #d93f6c;
+}
+
+/* 3D NO BUTTON */
+#no {
+    background: linear-gradient(145deg, #ffffff, #ececec);
+    color: #666;
+    right: 18%;
+    box-shadow: 0 8px 0 #cfcfcf;
+}
+
+/* floating hearts */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 22px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    0% {transform: translateY(0); opacity: 1;}
+    100% {transform: translateY(-110vh); opacity: 0;}
+}
+
+/* popup */
+.popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-box {
+    background: white;
+    padding: 35px 40px;
+    border-radius: 25px;
+    text-align: center;
+    animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+    0% {transform: scale(0.6);}
+    100% {transform: scale(1);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <img src="bunny.png" class="bunny">
+    <h1>Daisy, will you be my Valentine? 💕</h1>
+
+    <div class="buttons">
+        <button id="yes">YES</button>
+        <button id="no">NO</button>
+    </div>
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-box">
+        <h2>YAAAAAY DAISY 😍💖</h2>
+        <p>You just made me the happiest person ever 🐰💕</p>
+    </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const popup = document.getElementById("popup");
+
+function moveNo() {
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
+yesBtn.addEventListener("click", () => {
+    popup.style.display = "flex";
+    confetti();
+});
+
+/* floating hearts */
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💗";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}, 250);
+
+/* confetti */
+function confetti() {
+    for (let i = 0; i < 70; i++) {
+        const conf = document.createElement("div");
+        conf.innerHTML = "🎉";
+        conf.style.position = "fixed";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.top = Math.random() * 100 + "vh";
+        conf.style.fontSize = "22px";
+        conf.style.animation = "float 3s linear";
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 3000);
+    }
+}
+</script>
+
+</body>
+</html>
