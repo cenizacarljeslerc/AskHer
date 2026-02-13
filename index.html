@@ -39,7 +39,7 @@ h1 {
 
 .buttons {
     position: relative;
-    height: 100px;
+    height: 120px;
 }
 
 button {
@@ -50,10 +50,10 @@ button {
     font-weight: bold;
     cursor: pointer;
     position: absolute;
-    transition: 0.15s ease;
+    transition: transform 0.2s ease, left 0.2s ease, top 0.2s ease;
 }
 
-/* 3D YES BUTTON */
+/* YES BUTTON */
 #yes {
     background: linear-gradient(145deg, #ff5c8a, #ff8fb3);
     color: white;
@@ -61,17 +61,7 @@ button {
     box-shadow: 0 8px 0 #d93f6c;
 }
 
-#yes:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 0 #d93f6c;
-}
-
-#yes:active {
-    transform: translateY(6px);
-    box-shadow: 0 2px 0 #d93f6c;
-}
-
-/* 3D NO BUTTON */
+/* NO BUTTON */
 #no {
     background: linear-gradient(145deg, #ffffff, #ececec);
     color: #666;
@@ -141,20 +131,59 @@ const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 const popup = document.getElementById("popup");
 
-function moveNo() {
-    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+let yesScale = 1; // YES growth
+let noDirX = Math.random() > 0.5 ? 1 : -1; // NO horizontal direction
+let noDirY = Math.random() > 0.5 ? 1 : -1; // NO vertical direction
 
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+function moveNo() {
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const maxX = window.innerWidth - btnWidth;
+    const maxY = window.innerHeight - btnHeight;
+
+    const yesRect = yesBtn.getBoundingClientRect();
+    const buffer = 150 * yesScale; // minimum distance from YES
+
+    // Current NO position
+    let x = noBtn.offsetLeft;
+    let y = noBtn.offsetTop;
+
+    const step = 40; // speed of NO
+    x += step * noDirX;
+    y += step * noDirY;
+
+    // Bounce off edges
+    if (x < 0) { x = 0; noDirX *= -1; }
+    if (x > maxX) { x = maxX; noDirX *= -1; }
+    if (y < 0) { y = 0; noDirY *= -1; }
+    if (y > maxY) { y = maxY; noDirY *= -1; }
+
+    // Push away from YES if too close
+    if (Math.abs(x - yesRect.left) < buffer) {
+        noDirX = x < yesRect.left ? -1 : 1;
+        x += 50 * noDirX;
+        x = Math.max(0, Math.min(x, maxX));
+    }
+    if (Math.abs(y - yesRect.top) < buffer) {
+        noDirY = y < yesRect.top ? -1 : 1;
+        y += 50 * noDirY;
+        y = Math.max(0, Math.min(y, maxY));
+    }
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
+
+    // Grow YES
+    yesScale += 0.15;
+    if (yesScale > 3) yesScale = 3;
+    yesBtn.style.transform = `scale(${yesScale})`;
 }
 
+// Hover or touch triggers NO move
 noBtn.addEventListener("mouseover", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
+// YES click
 yesBtn.addEventListener("click", () => {
     popup.style.display = "flex";
     confetti();
